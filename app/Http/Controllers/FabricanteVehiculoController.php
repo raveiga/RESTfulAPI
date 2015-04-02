@@ -114,9 +114,98 @@ class FabricanteVehiculoController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request,$idFabricante,$idVehiculo)
     {
-        //
+        // Este método responde tanto a PUT como a PATCH
+        // Por medio de Request averiguamos que método estamos usando
+        $metodo=$request->method();
+
+        $fabricante=Fabricante::find($idFabricante);
+
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este fabricante','codigo'=>404],404);   
+        }
+
+        $vehiculo = $fabricante->vehiculos()->find($idVehiculo);
+
+        if (!$vehiculo)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este vehículo asociado a ese fabricante.','codigo'=>404],404);   
+        }
+
+        $color=$request->input('color');
+        $cilindraje=$request->input('cilindraje');
+        $potencia=$request->input('potencia');
+        $peso=$request->input('peso');    
+
+        if ($metodo === 'PATCH')
+        {
+            $bandera=false;
+
+            if ($color !=null && $color != '')
+            {
+                $vehiculo->color=$color;
+                $bandera=true;
+            }
+
+            if ($cilindraje !=null && $cilindraje != '')
+            {
+                $vehiculo->cilindraje=$cilindraje;
+                $bandera=true;
+
+            }
+
+
+            if ($potencia !=null && $potencia != '')
+            {
+                $vehiculo->potencia=$potencia;
+                $bandera=true;
+
+            }
+
+            if ($peso !=null && $peso != '')
+            {
+                $vehiculo->peso=$peso;
+                $bandera=true;
+
+            }
+
+            // Guardamos el registro.
+            if ($bandera)
+            {
+                $vehiculo->save();
+                return response()->json(['mensaje'=>'Vehículo editado.'],200);
+            }
+
+            // Se podría definir código 304 que indica que no hay necesidad de devolver nada 
+            // Y no mostraría nada como resultado.
+            // Así que vamos a poner código 200 para leer el mensaje.
+            return response()->json(['mensaje'=>'No se modificó ningún vehículo.'],200);
+
+        }
+
+
+     // Se actualiza alguno de los campos.
+
+        if (!$color || !$cilindraje || !$potencia || !$peso)
+        {
+            return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422);
+        }
+
+
+        $vehiculo->color=$color;
+        $vehiculo->cilindraje=$cilindraje;
+        $vehiculo->potencia=$potencia;
+        $vehiculo->peso=$peso;
+
+        $vehiculo->save();
+
+        return response()->json(['mensaje'=>'Fabricante actualizado correctamente.'],200);
+        
+        // Con PUT se actualiza el registro completo.
+        // Se validan todos los campos (nombre, telefono)
+        
     }
 
     /**

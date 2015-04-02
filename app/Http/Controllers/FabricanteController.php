@@ -97,12 +97,15 @@ class FabricanteController extends Controller
 
         if ($metodo === 'PATCH')
         {
+            $bandera=false;
             // Se actualiza alguno de los campos.
             $nombre = $request->input('nombre');
 
             if ($nombre !=null && $nombre != '')
             {
                 $fabricante->nombre=$nombre;
+            $bandera=true;
+
             }
 
             $telefono=$request->input('telefono');
@@ -110,10 +113,16 @@ class FabricanteController extends Controller
             if ($telefono !=null && $telefono !='')
             {
                 $fabricante->telefono=$telefono;
+            $bandera=true;
+
             }
             
             // Guardamos el registro.
-            $fabricante->save();
+            if ($bandera)
+            {
+                $fabricante->save();
+                return response()->json(['mensaje'=>'Vehículo editado.'],200);
+            }
         
             return response()->json(['mensaje'=>'Fabricante datos actualizados correctamente.'],200);
 
