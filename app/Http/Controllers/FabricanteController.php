@@ -42,16 +42,16 @@ class FabricanteController extends Controller
     public function store(Request $request)
     {
         // Recibimos una petición de tipo Request (inyección de dependencias).
-         if (!$request->input('nombre') || !$request->input('telefono'))
-        {
-            return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422);
-        }
+       if (!$request->input('nombre') || !$request->input('telefono'))
+       {
+        return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422);
+    }
 
-        Fabricante::create($request->all());
+    Fabricante::create($request->all());
         // Procedimiento para almacenar.
 
-        return response()->json(['mensaje'=>'Fabricante insertado'],201);
-    }
+    return response()->json(['mensaje'=>'Fabricante insertado'],201);
+}
 
     /**
      * Display the specified resource.
@@ -104,7 +104,7 @@ class FabricanteController extends Controller
             if ($nombre !=null && $nombre != '')
             {
                 $fabricante->nombre=$nombre;
-            $bandera=true;
+                $bandera=true;
 
             }
 
@@ -113,7 +113,7 @@ class FabricanteController extends Controller
             if ($telefono !=null && $telefono !='')
             {
                 $fabricante->telefono=$telefono;
-            $bandera=true;
+                $bandera=true;
 
             }
             
@@ -123,7 +123,7 @@ class FabricanteController extends Controller
                 $fabricante->save();
                 return response()->json(['mensaje'=>'Vehículo editado.'],200);
             }
-        
+            
             return response()->json(['mensaje'=>'Fabricante datos actualizados correctamente.'],200);
 
         }
@@ -158,6 +158,27 @@ class FabricanteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $fabricante = Fabricante::find($id);
+
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este fabricante','codigo'=>404],404);
+        }
+
+        // Si no ponemos los paréntesis al final obtenemos solamente el array.
+        $vehiculos=$fabricante->vehiculos;
+
+        if (sizeof($vehiculos) >0)
+        {
+            // El código 409 indica que existe algún conflicto en la petición.
+            return response()->json(['mensaje'=>'Este fabricante posee vehículos asociados y no puede ser eliminado. Elimine primero sus vehículos','codigo'=>409],409);
+
+        } 
+
+        $fabricante->delete();
+        
+        // Se podría usar el código 204.
+        return response()->json(['mensaje'=>'Fabricante eliminado'],200);
+
     }
 }

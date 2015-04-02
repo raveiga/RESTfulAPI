@@ -214,8 +214,28 @@ class FabricanteVehiculoController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($idFabricante, $idVehiculo)
     {
         //
+        $fabricante = Fabricante::find($idFabricante);
+
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este fabricante','codigo'=>404],404);   
+
+        }
+        
+        $vehiculo = $fabricante->vehiculos()->find($idVehiculo);
+
+        if (!$vehiculo)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este vehículo asociado a ese fabricante','codigo'=>404],404);   
+        }
+
+        $vehiculo->delete();
+
+        // En estándar http se recomienda código 204 de respuesta, que indica que básicamente no hay nada que devolver.
+        // Si queremos devolver el mensaje pondremos entonces un estado 200.
+        return response()->json(['mensaje'=>'Vehículo eliminado correctamente.'],204);
     }
 }
