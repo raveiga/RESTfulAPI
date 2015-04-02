@@ -4,6 +4,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Vehiculo;
+
 class VehiculoController extends Controller
 {
     /**
@@ -14,8 +16,10 @@ class VehiculoController extends Controller
     public function index()
     {
         //
-    }
+        return response()->json(['datos'=>Vehiculo::all()],200);
 
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -44,7 +48,18 @@ class VehiculoController extends Controller
      */
     public function show($id)
     {
-        //
+        // Devuelve un fabricante en base a su ID.
+        //return 'Mostrando fabricante con id '.$id;
+        $vehiculo = Vehiculo::find($id);
+
+        // Si no se encuentra el vehiculo devuelve un JSON y 404 http.
+        if (!$vehiculo)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este vehiculo','codigo'=>404],404);
+        }
+
+        // Si encuentra vehiculos devuelve el JSON con los resultados.
+        return response()->json(['datos'=>$vehiculo],200);
     }
 
     /**

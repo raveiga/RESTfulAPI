@@ -8,8 +8,11 @@ class Vehiculo extends Model
 	protected $primaryKey='serie';
 	protected $fillable = array('color','cilindraje','potencia','peso','fabricante_id');
 
+	// Aquí ponemos los campos que no queremos que se devuelvan en las consultas.
+	protected $hidden = ['created_at','updated_at']; 
+
 	public function fabricante()
 	{
-		$this->belongsTo('Fabricante');
+		return $this->belongsTo('App\Fabricante');
 	}
 }

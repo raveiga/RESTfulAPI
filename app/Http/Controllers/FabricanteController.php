@@ -4,6 +4,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Fabricante;
+
 class FabricanteController extends Controller
 {
     /**
@@ -13,8 +15,13 @@ class FabricanteController extends Controller
      */
     public function index()
     {
-        //
-        return 'mostrando todos los fabricantes';
+        // Devuelve todos los fabricantes en JSON.
+        // return Fabricante::all();
+        
+        // Mejora en la respuesta.
+        // Devolvemos explícitamente el código 200 http de datos encontrados.
+        // Se puede poner como 404 cuando no se encuentra nada.
+        return response()->json(['datos'=>Fabricante::all()],200);
     }
 
     /**
@@ -46,8 +53,18 @@ class FabricanteController extends Controller
      */
     public function show($id)
     {
-        //
-        return 'Mostrando fabricante con id '.$id;
+        // Devuelve un fabricante en base a su ID.
+        //return 'Mostrando fabricante con id '.$id;
+        $fabricante = Fabricante::find($id);
+
+        // Si no se encuentra el fabricante devuelve un JSON y 404 http.
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este fabricante','codigo'=>404],404);
+        }
+
+        // Si encuentra fabricantes devuelve el JSON con los resultados.
+        return response()->json(['datos'=>$fabricante],200);
     }
 
     /**
