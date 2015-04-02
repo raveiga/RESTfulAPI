@@ -10,11 +10,22 @@ use App\Vehiculo;
 
 class FabricanteVehiculoController extends Controller
 {
+    // Autenticación básica al acceder a FabricanteController
+    // solamente para algunos métodos de actualización.
+    // Para consulta no se suele hacer generalmente salvo casos específicos.
+    public function __construct()
+    {
+        $this->middleware('auth.basic',['only'=>['store','update','destroy']]);
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
+
     public function index($id)
     {
         //
@@ -47,9 +58,27 @@ class FabricanteVehiculoController extends Controller
      *
      * @return Response
      */
-    public function store()
+    public function store(Request $request,$id)
     {
-        //
+        // Necesitamos fabricante_id
+        // Serie (autoinc)
+        // color, cilindraje, potencia y peso
+        if (!$request->input('color') || !$request->input('cilindraje') || !$request->input('potencia') || !$request->input('peso'))
+        {
+            return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422); 
+        }
+
+        // Buscamos el fabricante:
+        $fabricante = Fabricante::find($id);
+
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No existe el fabricante asociado.','codigo'=>404],404); 
+        }
+
+        $fabricante->vehiculos()->create($request->all());
+
+        return  response()->json(['mensaje'=>'Vehiculo insertado correctamente.'],201);
     }
 
     /**

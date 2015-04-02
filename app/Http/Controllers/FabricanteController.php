@@ -13,6 +13,15 @@ class FabricanteController extends Controller
      *
      * @return Response
      */
+
+    // Autenticación básica al acceder a FabricanteController
+    // solamente para algunos métodos de actualización.
+    // Para consulta no se suele hacer generalmente salvo casos específicos.
+    public function __construct()
+    {
+        $this->middleware('auth.basic',['only'=>['store','update','destroy']]);
+    }
+
     public function index()
     {
         // Devuelve todos los fabricantes en JSON.
@@ -24,25 +33,24 @@ class FabricanteController extends Controller
         return response()->json(['datos'=>Fabricante::all()],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-        return 'mostrando formulario para crear fabricante';
-    }
 
     /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        //
+        // Recibimos una petición de tipo Request (inyección de dependencias).
+         if (!$request->input('nombre') || !$request->input('telefono'))
+        {
+            return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422);
+        }
+
+        Fabricante::create($request->all());
+        // Procedimiento para almacenar.
+
+        return response()->json(['mensaje'=>'Fabricante insertado'],201);
     }
 
     /**
@@ -67,18 +75,6 @@ class FabricanteController extends Controller
         return response()->json(['datos'=>$fabricante],200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-        return 'Mostrando formulario editar fabricante con id '.$id;
-
-    }
 
     /**
      * Update the specified resource in storage.

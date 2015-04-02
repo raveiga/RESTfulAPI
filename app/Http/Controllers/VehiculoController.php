@@ -13,6 +13,7 @@ class VehiculoController extends Controller
      *
      * @return Response
      */
+
     public function index()
     {
         //
