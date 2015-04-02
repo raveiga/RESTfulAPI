@@ -60,7 +60,7 @@ class FabricanteVehiculoController extends Controller
      */
     public function store(Request $request,$id)
     {
-        // Necesitamos fabricante_id
+        // Necesitamos $id del fabricante que recibimos en la URL.
         // Serie (autoinc)
         // color, cilindraje, potencia y peso
         if (!$request->input('color') || !$request->input('cilindraje') || !$request->input('potencia') || !$request->input('peso'))

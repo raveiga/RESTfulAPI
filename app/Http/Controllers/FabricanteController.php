@@ -82,9 +82,63 @@ class FabricanteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        //
+        // Este método responde tanto a PUT como a PATCH
+        // Por medio de Request averiguamos que método estamos usando
+        $metodo=$request->method();
+
+        $fabricante=Fabricante::find($id);
+
+        if (!$fabricante)
+        {
+            return response()->json(['mensaje'=>'No se encuentra este fabricante','codigo'=>404],404);   
+        }
+
+        if ($metodo === 'PATCH')
+        {
+            // Se actualiza alguno de los campos.
+            $nombre = $request->input('nombre');
+
+            if ($nombre !=null && $nombre != '')
+            {
+                $fabricante->nombre=$nombre;
+            }
+
+            $telefono=$request->input('telefono');
+
+            if ($telefono !=null && $telefono !='')
+            {
+                $fabricante->telefono=$telefono;
+            }
+            
+            // Guardamos el registro.
+            $fabricante->save();
+        
+            return response()->json(['mensaje'=>'Fabricante datos actualizados correctamente.'],200);
+
+        }
+
+
+     // Se actualiza alguno de los campos.
+        $nombre = $request->input('nombre');
+        $telefono=$request->input('telefono');
+
+        if (!$nombre || !$telefono)
+        {
+            return response()->json(['mensaje'=>'No se pudieron procesar los valores','codigo'=>422],422);
+        }
+
+        $fabricante->nombre=$nombre;
+        $fabricante->telefono=$telefono;
+
+        $fabricante->save();
+
+        return response()->json(['mensaje'=>'Fabricante actualizado correctamente.'],200);
+        
+        // Con PUT se actualiza el registro completo.
+        // Se validan todos los campos (nombre, telefono)
+        
     }
 
     /**
