@@ -13,3 +13,11 @@ Fabricante
 	#id
 	Nombre
 	Telefono
+
+### Tareas pendientes ###
+
+- Mensaje personalizado al fallar la autenticación.
+- Eliminación de rutas innecesarias.
+- Eliminar los métodos que sobran.
+- Agregar un control de rutas inexistentes.
+

@@ -19,7 +19,7 @@ class FabricanteController extends Controller
     // Para consulta no se suele hacer generalmente salvo casos específicos.
     public function __construct()
     {
-        $this->middleware('auth.basic',['only'=>['store','update','destroy']]);
+        $this->middleware('auth.basic.once',['only'=>['store','update','destroy']]);
     }
 
     public function index()
